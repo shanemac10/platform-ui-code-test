@@ -12,7 +12,6 @@ export class ListComponent implements OnInit {
 	public unselectedProviders:Array<Provider> = [];
 	public allProviders:Array<Provider> = [];
 	public loading:Boolean = false;
-	public a: any = false;
 
   constructor(private dataService:DataService) {}
 
