@@ -1,4 +1,66 @@
-<div class="list-container">
-  <h2>Providers</h2>
+<div class="container mt-4">
 
+  <h2 class="border-bottom">Providers</h2>
+
+  <div class="row mt-5 provider-row">
+	  <div class="col-6 provider-col selected-providers">
+
+		<h3 class="text-muted mt-2"><small>Selected Providers</small></h3>
+
+		<div class="provider-list-container">
+			<div *ngIf="!selectedProviders.length && !loading" class="info">
+				<p>Here are some Available Providers in your area. You can add any that you are interested in to your Selected Providers list by clicking the <span class="info-action">+</span></p>
+			</div>
+
+			<div *ngFor="let provider of selectedProviders; let i=index" class="card flex-md-row mb-2 mt-2">
+				<div class="card-body d-flex flex-column align-items-start">
+					<h4>{{provider.name}}</h4>
+					<div class="text-muted">
+						<p>
+							{{provider.address}} &nbsp;&nbsp; <button class="btn btn-outline-success btn-sm" (click)="launchMap(provider.address)">View Map</button>
+							<br>
+							{{provider.phone}} &nbsp;&nbsp; <a class="btn btn-outline-success btn-sm" href="tel:{{provider.phone}}">Call</a>
+						</p>
+					</div>
+				</div>
+				<img class="provider-avatar card-img-right flex-auto mt-3" src="{{../../../../assets/provider_avatar.png" alt="Provider Avatar">
+				<div class="action rotate" (click)="unselectProvider(i)">+</div><!-- An alphanumeric "x" is not displayed at 90 degrees but a more accute angle, so rotating a "+" symbol 45 degrees here instead. Also it's more consistent to use the same character for both. -->
+			</div>
+
+		</div>
+
+	  </div>
+
+	  <div class="col-6 provider-col unselected-providers">
+
+			<h3 class="text-muted mt-2"><small>Available Providers</small></h3>
+
+			<div class="provider-list-container">
+
+				<div *ngIf="loading" class="d-flex justify-content-center align-items-center">
+					<img class="loading-spinner" src="{{../../../../assets/spinner-loading.gif" alt="Loading Spinner">
+				</div>
+
+				<div *ngIf="!loading">
+					<div *ngFor="let provider of unselectedProviders; let i=index" class="card flex-md-row mb-2 mt-2">
+						<div class="card-body d-flex flex-column align-items-start">
+							<h4>{{provider.name}}</h4>
+							<div class="text-muted">
+								<p>
+									{{provider.address}} &nbsp;&nbsp; <button class="btn btn-outline-success btn-sm" (click)="launchMap(provider.address)">View Map</button>
+									<br>
+									{{provider.phone}} &nbsp;&nbsp; <a class="btn btn-outline-success btn-sm" href="tel:{{provider.phone}}">Call</a>
+								</p>
+							</div>
+						</div>
+						<img class="provider-avatar card-img-right flex-auto mt-3" src="{{../../../../assets/provider_avatar.png" alt="Provider Avatar">
+						<span class="tooltip">Add</span>
+						<div class="action" (click)="selectProvider(i)">+</div>
+					</div>
+				</div>
+
+			</div>
+
+	  </div>
+  </div>
 </div>
