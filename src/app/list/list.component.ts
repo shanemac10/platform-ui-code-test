@@ -17,16 +17,16 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
 	this.getProviders();
-	this.localStorageSetProviders();
   }
 
   async getProviders():Promise<void> {
 	this.localStorageGetProviders();
 	if(!this.unselectedProviders.length) this.loading = true; // Used to display a loading spinner on the Available Providers list if it's empty.
 	this.allProviders = await this.dataService.getProviders(); // Full list of all providers from the API.
-	this.unselectedProviders = this.allProviders.filter(allProvider => !this.selectedProviders.find(selProvider => allProvider.id == selProvider.id)); // Filter out selected providers from the list of all providers, into unselected providers.
+	this.setUnselectedProviders();
 	this.loading = false;
-	if(this.selectedProviders.length) this.updateSelectedProviders(); // In case any info has changed on the Provider, like address or phone, etc.
+	this.updateSelectedProviders(); // In case any info has changed on the Provider, like address or phone, etc.
+	this.localStorageSetProviders();
   }
 
   selectProvider(index:number):void {
@@ -40,7 +40,7 @@ export class ListComponent implements OnInit {
 	if(!this.selectedProviders[index]) return;
 	this.unselectedProviders.push(this.selectedProviders[index]);
 	this.selectedProviders.splice(index,1);
-	this.unselectedProviders.sort((a:Provider,b:Provider) => (b.id > a.id) ? -1:1); // Resorting the unselectedProviders list by id, so they will be in their original order. In real life this list would probably be sorted by some other metric on the back end, and I would probably opt to call getProviders again if the sort was not easy to do here.
+	this.setUnselectedProviders();
 	this.localStorageSetProviders();
   }
 
@@ -50,8 +50,8 @@ export class ListComponent implements OnInit {
   }
 
   localStorageGetProviders():void {
-	this.selectedProviders = JSON.parse(localStorage.getItem('selectedProviders') || '[]'); // Check local storage for previous user selected providers.
-	this.unselectedProviders = JSON.parse(localStorage.getItem('unselectedProviders') || '[]'); // Check local storage for previous user unselected providers as well.
+	this.selectedProviders = JSON.parse(localStorage.getItem('selectedProviders') || '[]');
+	this.unselectedProviders = JSON.parse(localStorage.getItem('unselectedProviders') || '[]');
   }
 
   updateSelectedProviders():void {
@@ -62,6 +62,10 @@ export class ListComponent implements OnInit {
 		newSelectedProviders.push(provider);
 	});
 	this.selectedProviders = newSelectedProviders;
+  }
+
+  setUnselectedProviders():void {
+	this.unselectedProviders = this.allProviders.filter(allProvider => !this.selectedProviders.find(selProvider => allProvider.id == selProvider.id)); // Filter out selected providers from the list of all providers, into unselected providers.
   }
 
   launchMap(address:String):String {
